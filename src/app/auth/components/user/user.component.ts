@@ -2,8 +2,8 @@ import { Component } from "@angular/core";
 import { Observable, of } from "rxjs";
 import { UserModel } from "src/app/shared/models";
 import { Store } from "@ngrx/store";
-import { State } from "src/app/shared/state";
 import { AuthUserActions } from "../../actions";
+import { selectAuthUser, State } from 'src/app/shared/state';
 
 @Component({
   selector: "app-user",
@@ -11,12 +11,13 @@ import { AuthUserActions } from "../../actions";
   styleUrls: ["./user.component.css"]
 })
 export class UserComponent {
-  user$: Observable<UserModel | null> = of({
-    id: "1",
-    username: "NgRx Learner"
-  });
+  user$: Observable<UserModel | null>;
+
+  constructor(private store: Store<State>) {
+    this.user$ = store.select(selectAuthUser);
+  }
 
   onLogout() {
-    // Not Implemented
+    this.store.dispatch(AuthUserActions.logout());
   }
 }
